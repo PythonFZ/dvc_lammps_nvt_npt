@@ -1,0 +1,124 @@
+schema: '2.0'
+stages:
+  NPT:
+    cmd: "python -c \"from src.LammpsSimulator import LammpsSimulator; LammpsSimulator.load(name='NPT').run_and_save()\"\
+      \ "
+    deps:
+    - path: NaCl.xyz
+      md5: 1e89b20f4413ba36b989d82da76ac716
+      size: 34005
+    - path: templates/npt.lmp
+      md5: c1f4abfd81bd325b4d48ff0cc2309e26
+      size: 2199
+    params:
+      params.yaml:
+        NPT:
+          parameters:
+            barostat_factor: 500
+            dump_interval: 1000
+            input_nstep: 0
+            name: NPT
+            pressure: 1.0
+            steps: 200000
+            temperature: 1200
+            thermo_intervall: 1000
+            timestep: 0.001
+    outs:
+    - path: NPT.in
+      md5: e4492cf24d08d0fe23c8a73ef7ecf651
+      size: 2036
+    - path: NPT.lammpstraj
+      md5: 7f20ceff55202ec613f8d3331b9e13ed
+      size: 6818182
+    - path: NPT.log
+      md5: bd41b6629a94345fb890cbcbb7d49e01
+      size: 14581
+  NVT:
+    cmd: "python -c \"from src.LammpsSimulator import LammpsSimulator; LammpsSimulator.load(name='NVT').run_and_save()\"\
+      \ "
+    deps:
+    - path: NPT.in
+      md5: e4492cf24d08d0fe23c8a73ef7ecf651
+      size: 2036
+    - path: NPT.lammpstraj
+      md5: 7f20ceff55202ec613f8d3331b9e13ed
+      size: 6818182
+    - path: NPT.log
+      md5: bd41b6629a94345fb890cbcbb7d49e01
+      size: 14581
+    - path: templates/nvt.lmp
+      md5: 2ba9d95237acdd7faa1fd6e39f500f5f
+      size: 2087
+    params:
+      params.yaml:
+        NVT:
+          parameters:
+            barostat_factor: 500
+            dump_interval: 100
+            input_nstep: 200000
+            name: NVT
+            pressure: 1.0
+            steps: 500000
+            temperature: 1200
+            thermo_intervall: 1000
+            timestep: 0.001
+    outs:
+    - path: NVT.in
+      md5: 824125de3d0c495ee49532f2c6a333a2
+      size: 1972
+    - path: NVT.lammpstraj
+      md5: 6f83db4bbaf45a1142c1db2650f6acb5
+      size: 193408692
+    - path: NVT.log
+      md5: 5c34c18520ea534eec5e0a18fd9e0689
+      size: 33182
+  MDSuiteDB:
+    cmd: "python -c \"from src.MDSuite import MDSuiteDB; MDSuiteDB.load(name='MDSuiteDB').run_and_save()\"\
+      \ "
+    deps:
+    - path: NVT.in
+      md5: 824125de3d0c495ee49532f2c6a333a2
+      size: 1972
+    - path: NVT.lammpstraj
+      md5: 6f83db4bbaf45a1142c1db2650f6acb5
+      size: 193408692
+    - path: NVT.log
+      md5: 5c34c18520ea534eec5e0a18fd9e0689
+      size: 33182
+    outs:
+    - path: mdsuite
+      md5: 13ccc92f66bb3a59cd7321dc383b9d80.dir
+      size: 78679520
+      nfiles: 3
+  EinsteinDiffusionNode:
+    cmd: "python -c \"from src.MDSuite import EinsteinDiffusionNode; EinsteinDiffusionNode.load(name='EinsteinDiffusionNode').run_and_save()\"\
+      \ "
+    deps:
+    - path: mdsuite
+      md5: 35af9493114302f11eb2f9c0ebd743aa.dir
+      size: 124609758
+      nfiles: 3
+    params:
+      params.yaml:
+        EinsteinDiffusionNode:
+          correlation_time: 1
+          data_range: 100
+    outs:
+    - path: nodes/EinsteinDiffusionNode/metrics_no_cache.json
+      md5: 24e5c67e26f2e4a150505cc3508e7761
+      size: 268
+  RadialDistributionFunctionNode:
+    cmd: "python -c \"from src.MDSuite import RadialDistributionFunctionNode; RadialDistributionFunctionNode.load(name='RadialDistributionFunctionNode').run_and_save()\"\
+      \ "
+    deps:
+    - path: mdsuite
+      md5: 4c5f4a55b52d5e3e2eaad7ad10edf3f7.dir
+      size: 124819292
+      nfiles: 3
+    outs:
+    - path: nodes/RadialDistributionFunctionNode/plots_no_cache.csv
+      md5: 812264cca792abcf91d01d636b5441d3
+      size: 59567
+    - path: rdf.png
+      md5: d3f1896d1befa755d6478ebe286270f6
+      size: 20649

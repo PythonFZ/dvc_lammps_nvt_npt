@@ -9,17 +9,17 @@ NPT:
         name: NPT
         pressure: 1.0
         steps: 200000
-        temperature: -1
+        temperature: 1700
         thermo_intervall: 1000
         timestep: 0.001
 NVT:
     parameters:
         barostat_factor: 500
-        dump_interval: 1000
-        input_nstep: 0
+        dump_interval: 100
+        input_nstep: 200000
         name: NVT
         pressure: 1.0
-        steps: 200000
-        temperature: -1
+        steps: 500000
+        temperature: 1700
         thermo_intervall: 1000
         timestep: 0.001

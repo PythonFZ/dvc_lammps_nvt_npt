@@ -1,0 +1,60 @@
+stages:
+  NPT:
+    cmd: "python -c \"from src.LammpsSimulator import LammpsSimulator; LammpsSimulator.load(name='NPT').run_and_save()\"\
+      \ "
+    deps:
+    - NaCl.xyz
+    - templates/npt.lmp
+    outs:
+    - NPT.in:
+        cache: false
+    - NPT.lammpstraj
+    - NPT.log
+    params:
+    - NPT
+  NVT:
+    cmd: "python -c \"from src.LammpsSimulator import LammpsSimulator; LammpsSimulator.load(name='NVT').run_and_save()\"\
+      \ "
+    deps:
+    - NPT.in
+    - NPT.lammpstraj
+    - NPT.log
+    - templates/nvt.lmp
+    outs:
+    - NVT.in:
+        cache: false
+    - NVT.lammpstraj
+    - NVT.log
+    params:
+    - NVT
+  MDSuiteDB:
+    cmd: "python -c \"from src.MDSuite import MDSuiteDB; MDSuiteDB.load(name='MDSuiteDB').run_and_save()\"\
+      \ "
+    deps:
+    - NVT.in
+    - NVT.lammpstraj
+    - NVT.log
+    outs:
+    - mdsuite
+  EinsteinDiffusionNode:
+    cmd: "python -c \"from src.MDSuite import EinsteinDiffusionNode; EinsteinDiffusionNode.load(name='EinsteinDiffusionNode').run_and_save()\"\
+      \ "
+    deps:
+    - mdsuite
+    params:
+    - EinsteinDiffusionNode
+    metrics:
+    - nodes/EinsteinDiffusionNode/metrics_no_cache.json:
+        cache: false
+  RadialDistributionFunctionNode:
+    cmd: "python -c \"from src.MDSuite import RadialDistributionFunctionNode; RadialDistributionFunctionNode.load(name='RadialDistributionFunctionNode').run_and_save()\"\
+      \ "
+    deps:
+    - mdsuite
+    outs:
+    - rdf.png:
+        cache: false
+    plots:
+    - nodes/RadialDistributionFunctionNode/plots_no_cache.csv:
+        cache: false
+        x: r

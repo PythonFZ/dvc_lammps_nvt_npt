@@ -1,0 +1,83 @@
+{
+    "NPT": {
+        "input_trajectory": "NaCl.xyz",
+        "input_simulation": null,
+        "template_file": {
+            "_type": "pathlib.Path",
+            "value": "templates/npt.lmp"
+        },
+        "parameters": {
+            "_type": "zn.method",
+            "value": {
+                "module": "src.LammpsSimulator",
+                "name": "Params"
+            }
+        },
+        "input_script": {
+            "_type": "pathlib.Path",
+            "value": "NPT.in"
+        },
+        "dump_file": "NPT.lammpstraj",
+        "log_file": "NPT.log"
+    },
+    "NVT": {
+        "input_trajectory": null,
+        "input_simulation": {
+            "_type": "ZnTrackType",
+            "value": {
+                "module": "src.LammpsSimulator",
+                "cls": "LammpsSimulator",
+                "name": "NPT"
+            }
+        },
+        "template_file": {
+            "_type": "pathlib.Path",
+            "value": "templates/nvt.lmp"
+        },
+        "parameters": {
+            "_type": "zn.method",
+            "value": {
+                "module": "src.LammpsSimulator",
+                "name": "Params"
+            }
+        },
+        "input_script": {
+            "_type": "pathlib.Path",
+            "value": "NVT.in"
+        },
+        "dump_file": "NVT.lammpstraj",
+        "log_file": "NVT.log"
+    },
+    "MDSuiteDB": {
+        "simulator": {
+            "_type": "ZnTrackType",
+            "value": {
+                "module": "src.LammpsSimulator",
+                "cls": "LammpsSimulator",
+                "name": "NVT"
+            }
+        },
+        "project_path": "mdsuite"
+    },
+    "EinsteinDiffusionNode": {
+        "project": {
+            "_type": "ZnTrackType",
+            "value": {
+                "module": "src.MDSuite",
+                "cls": "MDSuiteDB",
+                "name": "MDSuiteDB"
+            }
+        }
+    },
+    "RadialDistributionFunctionNode": {
+        "project": {
+            "_type": "ZnTrackType",
+            "value": {
+                "module": "src.MDSuite",
+                "cls": "MDSuiteDB",
+                "name": "MDSuiteDB"
+            }
+        },
+        "plot": "rdf.png"
+    }
+}

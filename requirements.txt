@@ -1,0 +1,3 @@
+git+git://github.com/zincware/ZnTrack.git#egg=zntrack
+git+git://github.com/zincware/MDSuite.git#egg=mdsuite
+jinja2

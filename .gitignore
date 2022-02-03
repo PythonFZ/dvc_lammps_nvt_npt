@@ -1,0 +1,7 @@
+__pycache__/
+.idea
+/NPT.lammpstraj
+/NPT.log
+/NVT.lammpstraj
+/NVT.log
+/mdsuite

@@ -1,0 +1,57 @@
+name: CML
+
+on:
+  push:
+    branches-ignore:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+      - uses: iterative/setup-cml@v1
+      - name: Set up Python 3.9
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.9
+      - name: Setup Git User
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+      - name: Install Python Requirements
+        run: |
+          pip install -r requirements.txt
+          pip install dvc[webdav]
+      - name: Install Lammps
+        run: |
+          sudo add-apt-repository ppa:gladky-anton/lammps
+          sudo add-apt-repository ppa:openkim/latest
+          sudo apt update
+          sudo apt install lammps-stable
+          sudo apt install lammps-stable-data
+      - name: Run stage
+        run: |
+          dvc repro
+      - name: CML Publish Results
+        env:
+          REPO_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ github.token }}
+        run: |
+          CIREVISION=$(git rev-parse HEAD)
+          BRANCH=$(git rev-parse --abbrev-ref HEAD)
+          git add .
+          git commit -m "CML auto commit"
+          git checkout -b "cml_${CIREVISION:0:10}"
+          git push --set-upstream origin "cml_${CIREVISION:0:10}"
+          git push
+          gh pr create --fill --base $BRANCH
+          
+          gh pr merge --rebase "cml_${CIREVISION:0:10}"
+          echo "# Report" >> report.md
+          echo "## Computed Metrics"
+          dvc metrics show --md >> report.md
+          echo "## Radial Distribution Function" >> report.md
+          npx cml-publish rdf.png --md >> report.md
+          npx cml-send-comment report.md --commit-sha=$CIREVISION

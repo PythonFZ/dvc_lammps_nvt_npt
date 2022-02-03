@@ -1,0 +1,8 @@
+{
+    "analysis": {
+        "[Na] diffusion_coefficient * 10^9": 13.397917968428432,
+        "[Na] uncertainty * 10^9": 0.003488309352099456,
+        "[Cl] diffusion_coefficient * 10^9": 12.177615935689953,
+        "[Cl] uncertainty * 10^9": 0.011251561417234062
+    }
+}

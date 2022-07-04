@@ -1,0 +1,80 @@
+LAMMPS (3 Mar 2020)
+#############################
+### Configure system type ###
+#############################
+
+units           metal
+boundary        p p p
+atom_style      charge
+
+################################
+### Define system parameters ###
+################################
+
+region          myRegion block 0.0 32.65 0.0 32.65 0.0 32.65
+create_box      2 myRegion
+Created orthogonal box = (0 0 0) to (32.65 32.65 32.65)
+  1 by 1 by 1 MPI processor grid
+
+##############################################################
+### Read input file and assign types and elementary groups ###
+##############################################################
+
+# We start from a prior lammps simulations
+
+read_dump       NPT.lammpstraj 200000 x y z box yes add yes format native
+  orthogonal box = (-0.859823 -0.859823 -0.859823) to (33.5098 33.5098 33.5098)
+  0 atoms before read
+  1000 atoms in snapshot
+  0 atoms purged
+  0 atoms replaced
+  0 atoms trimmed
+  1000 atoms added
+  1000 atoms after read
+
+set             atom 1*500 type 1
+  500 settings made for type
+set             atom 501*1000 type 2
+  500 settings made for type
+mass            1  22.989
+mass            2  35.453
+set     atom 1*500 charge 1
+  500 settings made for charge
+set     atom 501*1000 charge -1
+  500 settings made for charge
+group           Na type 1
+500 atoms in group Na
+group           Cl type 2
+500 atoms in group Cl
+
+velocity       all create 1500 132465
+
+########################################
+### Define forcefield for simulation ###
+########################################
+
+kspace_style pppm 1.0e-4
+
+# order: A, rho, sigma, C, D
+pair_style born/coul/long 10.0
+pair_style born/coul/long 10.0 8.
+pair_coeff 1 1 0.26370336 0.31699740062 2.340 1.048573120 0.49932058
+pair_coeff 1 2 0.21096269 0.31699740062 2.755 6.990487130 8.67580800
+pair_coeff 2 2 0.15822202 0.31699740062 3.170 72.40147522 145.42710039
+
+
+# ***************************************** #
+# *********** Run NVT Simulation ********** #
+# ***************************************** #
+
+timestep        0.001
+# Fix NVT ensemble.
+fix             myThermostat all nvt temp 1500 1500 $(50*dt)
+fix             myThermostat all nvt temp 1500 1500 0.050000000000000002776
+
+dump            myDump1 all custom 100 NVT.lammpstraj id element x y z ix iy iz
+dump_modify     myDump1 element Na Cl
+dump_modify     myDump1 sort id
+dump_modify     myDump1 append yes
+
+log             NVT.log append

@@ -3,6 +3,7 @@ EinsteinDiffusionNode:
     data_range: 100
 NPT:
     parameters:
+        _cls: Params
         barostat_factor: 500
         dump_interval: 1000
         input_nstep: 0
@@ -14,6 +15,7 @@ NPT:
         timestep: 0.001
 NVT:
     parameters:
+        _cls: Params
         barostat_factor: 500
         dump_interval: 1000
         input_nstep: 0

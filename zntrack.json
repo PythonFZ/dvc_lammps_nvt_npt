@@ -1,27 +1,30 @@
 {
     "NPT": {
-        "input_trajectory": "NaCl.xyz",
-        "input_simulation": null,
-        "template_file": {
-            "_type": "pathlib.Path",
-            "value": "templates/npt.lmp"
-        },
-        "parameters": {
-            "_type": "zn.method",
-            "value": {
-                "module": "src.LammpsSimulator",
-                "name": "Params"
-            }
-        },
+        "dump_file": "NPT.lammpstraj",
         "input_script": {
             "_type": "pathlib.Path",
             "value": "NPT.in"
         },
-        "dump_file": "NPT.lammpstraj",
-        "log_file": "NPT.log"
+        "input_simulation": null,
+        "input_trajectory": "NaCl.xyz",
+        "log_file": "NPT.log",
+        "parameters": {
+            "_type": "zn.method",
+            "value": {
+                "module": "src.LammpsSimulator"
+            }
+        },
+        "template_file": {
+            "_type": "pathlib.Path",
+            "value": "templates/npt.lmp"
+        }
     },
     "NVT": {
-        "input_trajectory": null,
+        "dump_file": "NVT.lammpstraj",
+        "input_script": {
+            "_type": "pathlib.Path",
+            "value": "NVT.in"
+        },
         "input_simulation": {
             "_type": "ZnTrackType",
             "value": {
@@ -30,25 +33,21 @@
                 "name": "NPT"
             }
         },
-        "template_file": {
-            "_type": "pathlib.Path",
-            "value": "templates/nvt.lmp"
-        },
+        "input_trajectory": null,
+        "log_file": "NVT.log",
         "parameters": {
             "_type": "zn.method",
             "value": {
-                "module": "src.LammpsSimulator",
-                "name": "Params"
+                "module": "src.LammpsSimulator"
             }
         },
-        "input_script": {
+        "template_file": {
             "_type": "pathlib.Path",
-            "value": "NVT.in"
-        },
-        "dump_file": "NVT.lammpstraj",
-        "log_file": "NVT.log"
+            "value": "templates/nvt.lmp"
+        }
     },
     "MDSuiteDB": {
+        "project_path": "mdsuite",
         "simulator": {
             "_type": "ZnTrackType",
             "value": {
@@ -56,8 +55,7 @@
                 "cls": "LammpsSimulator",
                 "name": "NVT"
             }
-        },
-        "project_path": "mdsuite"
+        }
     },
     "EinsteinDiffusionNode": {
         "project": {
@@ -70,6 +68,7 @@
         }
     },
     "RadialDistributionFunctionNode": {
+        "plot": "rdf.png",
         "project": {
             "_type": "ZnTrackType",
             "value": {
@@ -77,7 +76,6 @@
                 "cls": "MDSuiteDB",
                 "name": "MDSuiteDB"
             }
-        },
-        "plot": "rdf.png"
+        }
     }
 }

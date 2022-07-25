@@ -26,7 +26,7 @@ class MDSuiteDB(Node):
 
 
 class EinsteinDiffusionNode(Node):
-    project: MDSuiteDB = dvc.deps(MDSuiteDB.load())
+    project: MDSuiteDB = zn.deps(MDSuiteDB)
 
     analysis = zn.metrics()
     data_range = zn.params(100)
@@ -58,9 +58,9 @@ class EinsteinDiffusionNode(Node):
 
 
 class RadialDistributionFunctionNode(Node):
-    project: MDSuiteDB = dvc.deps(MDSuiteDB.load())
+    project: MDSuiteDB = zn.deps(MDSuiteDB)
     plot = dvc.outs_no_cache("rdf.png")
-    rdf: pd.DataFrame = zn.plots()
+    rdf: pd.DataFrame = zn.plots(x="r",  x_label="distance r", y_label="g(r)")
 
     def run(self):
         project = mds.Project(self.project.project_path)

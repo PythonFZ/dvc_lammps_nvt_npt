@@ -35,7 +35,7 @@ class Params:
 
 class LammpsSimulator(Node):
     input_trajectory = dvc.deps()
-    input_simulation: LammpsSimulator = dvc.deps()
+    input_simulation: LammpsSimulator = zn.deps()
     template_file = dvc.deps()
     parameters = zn.Method()
 

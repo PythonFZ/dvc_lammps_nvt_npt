@@ -55,6 +55,8 @@ stages:
     - rdf.png:
         cache: false
     plots:
-    - nodes/RadialDistributionFunctionNode/plots_no_cache.csv:
+    - nodes/RadialDistributionFunctionNode/rdf.csv:
         cache: false
         x: r
+        x_label: distance r
+        y_label: g(r)
